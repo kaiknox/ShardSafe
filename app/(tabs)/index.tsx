@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Alert, Platform, StyleSheet } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
@@ -7,7 +7,36 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
 
+import Button from '@/components/ui/button';
+import { exportPublicKey, loadIdentity } from '@/lib/identityEngine';
+import { initP2P, listFiles, uploadFile } from '@/lib/p2pEngine';
+import { useEffect, useState } from 'react';
+
 export default function HomeScreen() {
+  const [identity, setIdentity] = useState<null | any>(null);
+
+  useEffect(() => {
+    loadIdentity().then(setIdentity);
+  }, []);
+
+
+/*
+// Reload any friends who were granted access previously
+await reloadWriters()
+
+
+// Add a friend as a writer
+// Friend sends you their writer key (from their myCore.key)
+await addWriter('d4e82f...', exportPublicKey(identity.publicKey))
+
+*/
+
+  if (!identity) {
+    return (
+      <ThemedView style={{ flex: 1, backgroundColor: '#111111', alignItems: 'center', justifyContent: 'center' }}>
+      </ThemedView>
+    );
+  }
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -17,6 +46,36 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
+      <Button label="Test identity" onPress={() => Alert.alert('P2P Identity', JSON.stringify(identity))} />
+      <Button label="Init P2P" onPress={async () => {
+        Alert.alert('P2P initialized', JSON.stringify(identity));
+          // On app startup
+        const { base, view, myCore } = await initP2P(identity)
+        }
+      } />
+      <Button label="Upload file" onPress={async () => {
+        Alert.alert('P2P file uploaded', JSON.stringify(identity));
+          // Upload a file
+          const encryptedPayload = 'Hello world'  // read file as base64
+          //const { encryptedPayload, shards } = encryptAndShard(fileBase64, 5, 3)
+
+          await uploadFile(
+            '/photos/cat.jpg',
+            encryptedPayload,
+            exportPublicKey(identity.publicKey),
+            0
+          )
+        }
+      } />
+          <Button label="List files" onPress={async () => {
+            Alert.alert('P2P files listed', JSON.stringify(identity));
+            // List files (works on all devices, shows merged result)
+            const files = await listFiles()
+            console.log(files)
+            // → [{ path: '/photos/cat.jpg', author: '9d4e2f...', ... }]
+        }
+      } />
+        
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
