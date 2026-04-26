@@ -114,3 +114,10 @@ Each device stores:
 - Its own **fragment of the decryption key**
 
 This way, no single device can decrypt the file alone — a minimum threshold of key fragments from different nodes is required.
+
+## About this project
+
+This project was developed during a **Hackathon**. Due to the time constraints of the event, you might find some bugs or unoptimized code. Contributions and pull requests are welcome!
+
+> **Note:** To connect the devices, please keep in mind that the **public key** you must use is the **first one to appear**.
+
