@@ -112,4 +112,5 @@ The decryption key is **split using Shamir's Secret Sharing (SSS)** into *n* fra
 Each device stores:
 - A copy of the **encrypted file**
 - Its own **fragment of the decryption key**
+
 This way, no single device can decrypt the file alone — a minimum threshold of key fragments from different nodes is required.
