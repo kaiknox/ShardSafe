@@ -121,3 +121,9 @@ This project was developed during a **Hackathon**. Due to the time constraints o
 
 > **Note:** To connect the devices, please keep in mind that the **public key** you must use is the **first one to appear**.
 
+## Future Improvements
+
+- [ ] **File deletion:** Add a "delete" button next to each file to remove it directly from local storage.
+- [ ] **Persistent sessions:** Make the external key persistent so it is retained when resuming the same session.
+
+
