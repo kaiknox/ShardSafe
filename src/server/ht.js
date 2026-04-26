@@ -18,7 +18,7 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto'
 import { existsSync, readFileSync, writeFileSync }       from 'node:fs'
 
-const ARCHIVO_CONFIANZA = './trusted.json'
+const ARCHIVO_CONFIANZA = './src/server/trusted.json'
 
 // ═════════════════════════════════════════════════════════════════════════════
 // 1. GESTIÓ DE LA TAULA DE CONFIANÇA  (ex trusted.js)

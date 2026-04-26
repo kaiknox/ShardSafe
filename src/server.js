@@ -9,9 +9,9 @@ import { WebSocketServer } from 'ws';
 import { registrarUsuario } from './server/prueba-auth.js';
 import { verificarPassword } from './server/prueba-auth.js';
 import { agregarDispositivo, eliminarDispositivo, listarDispositivos } from './server/trusted.js';
-import { xifrarIDistribuir } from "./server/emisor.js";
+import { xifrarIDistribuir, recopilarIDesxifrar } from "./server/emisor.js";
 import './server/receptor.js' // This file handles incoming ID 5 messages and saves files to disk
-
+import { llistarArxius } from './server/list.js'; // Function to list saved files
 
 // ─── Import your P2P engine functions ────────────────────────────────────────
 // Uncomment these when p2pEngine is ready:
@@ -137,10 +137,7 @@ async function dispatch(ws, id, action, payload) {
     case 'loadAll': {
       // TODO: const files = await listFiles()
       // Mock:
-      const files = [
-        { path: '/photos/cat.jpg',   author: 'abc123', timestamp: Date.now() - 10000, size: 204800 },
-        { path: '/docs/report.pdf',  author: 'abc123', timestamp: Date.now() - 50000, size: 512000 },
-      ];
+    const files = llistarArxius();
       replyOk(ws, id, { files });
       break;
     }
@@ -157,6 +154,14 @@ async function dispatch(ws, id, action, payload) {
       // Push to React so the file list updates in real time without re-fetching
       push({ event: 'file:added', data: { file } });
       break;
+    }
+
+    case 'download': {
+        console.log('Download request for path:', payload.path);
+      const { path } = payload;
+      if (!path) { replyError(ws, id, 'path required'); return; }
+      const file = await recopilarIDesxifrar(path);
+      replyOk(ws, id, { file });
     }
 
     // ── delete: remove from P2P drive ────────────────────────────────────────

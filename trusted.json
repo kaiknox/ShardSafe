@@ -1,17 +1,12 @@
 {
   "39e28936c04507452c6d8625e7fe9cc15cc3be36139802dc48b176881818824b": {
-    "nombre": "3",
+    "nombre": "Sebas",
     "publicKey": "39e28936c04507452c6d8625e7fe9cc15cc3be36139802dc48b176881818824b",
-    "agregadoEl": "2026-04-26T01:23:33.606Z"
+    "agregadoEl": "2026-04-26T00:54:48.473Z"
   },
   "ea6f45ad8e70898391027da40861a808ac3e74c9634081772b7418ab427b98a0": {
     "nombre": "Sebas real",
     "publicKey": "ea6f45ad8e70898391027da40861a808ac3e74c9634081772b7418ab427b98a0",
     "agregadoEl": "2026-04-26T00:57:18.587Z"
-  },
-  "6b1920cea61ccb60cb854267fa0636beff9d652565e42a10437a301e42dbee02": {
-    "nombre": "4",
-    "publicKey": "6b1920cea61ccb60cb854267fa0636beff9d652565e42a10437a301e42dbee02",
-    "agregadoEl": "2026-04-26T01:24:00.044Z"
   }
 }

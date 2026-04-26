@@ -58,7 +58,7 @@ export default function HomeScreen({ ws }: Props) {
 
 function FilesView({ ws }: { ws: WebSocket }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { connected, p2pReady, files, loading, uploadFile, deleteFile, loadAll } = useP2P(ws);
+  const { connected, p2pReady, files, loading, uploadFile, deleteFile, loadAll, downloadFile } = useP2P(ws);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -80,6 +80,27 @@ function FilesView({ ws }: { ws: WebSocket }) {
     if (!confirm(`Delete ${path}?`)) return;
     await deleteFile(path).catch(console.error);
   };
+
+  const handleDownload = async (path: string) => {
+    downloadFile(path)
+      .then(file => {
+        console.log(file, file.file.base64);
+        const blob = new Blob([Uint8Array.from(atob(file.file.base64), c => c.charCodeAt(0))]);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = path.split('/').pop() ?? 'file';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      })
+      .catch((e) => {
+        console.log(e);
+        alert('Download failed — is the P2P server running?');
+      });
+  };
+
 
   return (
     <>
@@ -108,7 +129,7 @@ function FilesView({ ws }: { ws: WebSocket }) {
       ) : (
         <div className="hs-grid">
           {files.map(file => (
-            <FileCard key={file.path} file={file} onDelete={() => handleDelete(file.path)} />
+            <FileCard key={file.path} file={file} onDownload={() => handleDownload(file.path.split('/').pop() ?? file.path)} onDelete={() => handleDelete(file.path)} />
           ))}
         </div>
       )}
@@ -116,11 +137,11 @@ function FilesView({ ws }: { ws: WebSocket }) {
   );
 }
 
-function FileCard({ file, onDelete }: { file: FileEntry; onDelete: () => void }) {
+function FileCard({ file, onDelete, onDownload }: { file: FileEntry; onDelete: () => void; onDownload: () => void }) {
   const ext  = file.path.split('.').pop()?.toUpperCase() ?? 'FILE';
   const name = file.path.split('/').pop() ?? file.path;
   return (
-    <div className="hs-card">
+    <div className="hs-card" onClick={onDownload}>
       <div className="hs-card-icon">{ext}</div>
       <div className="hs-card-info">
         <p className="hs-card-name">{name}</p>

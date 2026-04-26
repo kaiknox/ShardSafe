@@ -123,8 +123,12 @@ export function useP2P(ws: WebSocket) {
     }
   }, [call]);
 
+
   const uploadFile = useCallback((path: string, fileBase64: string) =>
     call('upload', { path, fileBase64 }), [call]);
+
+  const downloadFile = useCallback((path: string) =>
+    call('download', { path }), [call]);
 
   const deleteFile = useCallback((path: string) =>
     call('delete', { path }), [call]);
@@ -142,6 +146,6 @@ export function useP2P(ws: WebSocket) {
 
   return {
     connected, p2pReady, files, loading,
-    loadAll, uploadFile, deleteFile, addWriter, revokeDevice, getWriterKey,
+    loadAll, uploadFile, deleteFile, addWriter, revokeDevice, getWriterKey, downloadFile
   };
 }

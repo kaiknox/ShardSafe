@@ -5,7 +5,7 @@ import { getDispositivos } from './ht.js'
 import { encryptAndShard, reconstructAndDecrypt } from './ht.js'
 
 // Directori local d'arxius (ha de coincidir amb el receptor)
-const DIRECTORIO_ARCHIVOS = './archivos'
+const DIRECTORIO_ARCHIVOS = './src/server/archivos'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers de xarxa de baix nivell
