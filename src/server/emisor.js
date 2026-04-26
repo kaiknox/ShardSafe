@@ -204,9 +204,23 @@ export async function recopilarIDesxifrar(nomArxiu) {
 
   console.log(`[✓] Fragments suficients (${fragments.length}/${k}). Desxifrant...`)
 
+
   // reconstructAndDecrypt espera (encryptedPayload, shards[])
   // on cada shard és l'objecte { x, y } o string segons cryptoEngine
-  const base64Desxifrat = await reconstructAndDecrypt(encryptedPayload, fragments)
+  // Normalitzar tots els fragments al mateix format
+  const fragmentsNormalitzats = fragments.map(f => {
+    if (typeof f === 'string') {
+      try { return JSON.parse(f) }
+      catch { return f }
+    }
+    return f
+  })
+
+  const base64Desxifrat = await reconstructAndDecrypt(encryptedPayload, fragmentsNormalitzats)
+
+  // reconstructAndDecrypt espera (encryptedPayload, shards[])
+  // on cada shard és l'objecte { x, y } o string segons cryptoEngine
+  //const base64Desxifrat = await reconstructAndDecrypt(encryptedPayload, fragments)
 
   return {
     base64:       base64Desxifrat,
