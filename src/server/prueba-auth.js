@@ -32,7 +32,7 @@ export function registrarUsuario(password) {
   fs.writeFileSync(ARCHIVO_SEGURIDAD, JSON.stringify(datosAGuardar, null, 2));
   console.log("\n✅ ¡Usuario registrado con éxito!");
   // Mostramos solo un trozo de la dirección para no saturar la pantalla
-  console.log(`📍 Tu nueva dirección pública es: ${publicKeyHex.substring(0, 20)}...`);
+  console.log(`📍 Tu nueva dirección pública es: ${publicKeyHex}`);
 }
 
 export function verificarPassword(password) {
