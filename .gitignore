@@ -15,7 +15,6 @@ dist-ssr
 src/server/archivos/
 src/server/archivos/*
 src/server/trusted.json
-src/server/identity.json
 
 # Editor directories and files
 .vscode/*
