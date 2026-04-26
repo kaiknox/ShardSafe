@@ -23,6 +23,7 @@ export interface FileEntry {
 
 export type ClientRequest =
   | { id: string; action: 'init';          payload: { mnemonic: string } }
+  | { id: string; action: 'register';      payload: { mnemonic: string } }
   | { id: string; action: 'loadAll';       payload?: never }
   | { id: string; action: 'upload';        payload: { path: string; fileBase64: string } }
   | { id: string; action: 'delete';        payload: { path: string } }

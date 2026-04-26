@@ -6,6 +6,12 @@
 // npm install ws
 
 import { WebSocketServer } from 'ws';
+import { registrarUsuario } from './server/prueba-auth.js';
+import { verificarPassword } from './server/prueba-auth.js';
+import { agregarDispositivo, eliminarDispositivo, listarDispositivos } from './server/trusted.js';
+import { xifrarIDistribuir } from "./server/emisor.js";
+import './server/receptor.js' // This file handles incoming ID 5 messages and saves files to disk
+
 
 // ─── Import your P2P engine functions ────────────────────────────────────────
 // Uncomment these when p2pEngine is ready:
@@ -117,6 +123,16 @@ async function dispatch(ws, id, action, payload) {
       break;
     }
 
+
+
+
+    case 'register': {
+        const { mnemonic } = payload;
+        registrarUsuario(mnemonic);
+        replyOk(ws, id, { message: 'Usuario registrado' });
+        break;
+    }
+
     // ── loadAll: return all files in the P2P drive ────────────────────────────
     case 'loadAll': {
       // TODO: const files = await listFiles()
@@ -134,9 +150,8 @@ async function dispatch(ws, id, action, payload) {
       const { path, fileBase64 } = payload;
       if (!path || !fileBase64) { replyError(ws, id, 'path and fileBase64 required'); return; }
 
-      // TODO: await uploadFile(path, fileBase64, identity, encryptAndShard)
-      const file = { path, author: 'me', timestamp: Date.now(), size: fileBase64.length };
-
+      await xifrarIDistribuir(path, fileBase64);
+        const file = { path, author: 'me', timestamp: Date.now(), size: fileBase64.length };
       replyOk(ws, id, { file });
 
       // Push to React so the file list updates in real time without re-fetching
@@ -185,6 +200,52 @@ async function dispatch(ws, id, action, payload) {
       replyOk(ws, id);
       break;
     }
+
+
+
+    // Add these cases to your dispatch() switch in server.js
+// Make sure to import trusted.js at the top:
+//
+//   const { agregarDispositivo, eliminarDispositivo, listarDispositivos } = require('./trusted.js');
+//
+// And change listarDispositivos() to return the data instead of console.log it:
+// (see updated trusted.js below)
+
+// ─── Paste these cases into your existing switch(action) ─────────────────────
+
+    case 'listDevices': {
+      // Returns all trusted devices as an array
+      const devices = listarDispositivos();
+      replyOk(ws, id, { devices });
+      break;
+    }
+
+    case 'addDevice': {
+      const { publicKey, nombre } = payload;
+      if (!publicKey || !nombre) {
+        replyError(ws, id, 'publicKey and nombre are required');
+        break;
+      }
+      agregarDispositivo(publicKey, nombre);
+      replyOk(ws, id, { message: `Device '${nombre}' added` });
+      break;
+    }
+
+    case 'removeDevice': {
+      const { publicKey } = payload;
+      if (!publicKey) {
+        replyError(ws, id, 'publicKey is required');
+        break;
+      }
+      const removed = eliminarDispositivo(publicKey);
+      if (removed) {
+        replyOk(ws, id, { message: 'Device removed' });
+      } else {
+        replyError(ws, id, 'Device not found');
+      }
+      break;
+    }
+
 
     default:
       replyError(ws, id, `Unknown action: ${action}`);

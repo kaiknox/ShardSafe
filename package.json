@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "crypto": "^1.0.1",
+    "hyperdht": "^6.30.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "websocket": "^1.0.35",
