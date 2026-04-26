@@ -119,11 +119,12 @@ This way, no single device can decrypt the file alone — a minimum threshold of
 
 This project was developed during a **Hackathon**. Due to the time constraints of the event, you might find some bugs or unoptimized code. Contributions and pull requests are welcome!
 
-> **Note:** To connect the devices, please keep in mind that the **public key** you must use is the **first one to appear**.
+> **Note:** To connect the devices, please keep in mind that the **public key** you must use is the **first one to appear on terminal**.
 
 ## Future Improvements
 
 - [ ] **File deletion:** Add a "delete" button next to each file to remove it directly from local storage.
 - [ ] **Persistent sessions:** Make the external key persistent so it is retained when resuming the same session.
+- [ ] **Copy public address:** Add a button in the devices section to easily copy your own public address/key for quick sharing.
 
 
