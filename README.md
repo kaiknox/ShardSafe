@@ -71,3 +71,44 @@ export default defineConfig([
   },
 ])
 ```
+## Usage
+The project requires **two separate terminals** to run simultaneously:
+```bash
+# Terminal 1 – Frontend
+npm run dev
+# Terminal 2 – Backend
+node src/server.js
+```
+The frontend and the core logic run as separate processes that communicate with each other. This separation is necessary due to significant instability in the libraries available for in-process communication.
+
+## Concept
+A **decentralized, fragmented storage system for sensitive files**.
+It allows you to build a trusted network of personal devices. When a file is uploaded, it is distributed across all nodes using P2P — fragmented and encrypted — in such a way that only a percentage of the total fragments is needed to fully recover the content.
+This means you are not dependent on any single device or server. The P2P architecture enables decentralized communication, and if a node holding part of the data goes offline or is lost, the files can still be reconstructed and remain accessible.
+The system makes it **impossible to retrieve data without the app password** (you need at minimum some fragments from other nodes), and makes **every individual node expendable** — if a device is stolen or lost, all uploaded files can still be recovered.
+
+## Features
+- Communication is handled via **P2P protocols**. At the start of a session, a random private key is generated (to avoid collisions). You can then add the public keys of other devices in the network to make them known peers.
+- Once peers are configured, you can **upload files**, which are fragmented and distributed to the rest of the network.
+- The UI shows **all files for which you hold at least one fragment**, and gives you the option to attempt reconstruction. When reconstruction is requested, all known nodes are queried for their fragments — if the minimum number of fragments is available, the file is downloaded and reassembled.
+
+## Technical Details
+Every device runs **two concurrent processes**:
+- **Emitter**: handles user-initiated actions (upload file, download file, etc.)
+- **Receiver**: a passive daemon that listens for incoming messages and responds accordingly (e.g. returning a file fragment when asked, sending acknowledgements, etc.)
+In short, the emitter responds to user actions; the receiver serves as a responder to other users' emitters on the network.
+### Protocol
+Communication uses a custom protocol with the format `id + payload`:
+| ID | Direction | Description | Response |
+|----|-----------|-------------|---------|
+| `1` | Emitter → Receiver | Request a file fragment | `2` — the corresponding key fragment for that file |
+| `3` | Emitter → Receiver | Ping to check if a node is active | `4` — ACK |
+| `5` | Emitter → Receiver | Send the encrypted file to all devices | *(no response)* |
+### Encryption & Key Splitting
+Given a file:
+
+It is **encrypted with AES**, producing a ciphertext and a decryption key.
+The decryption key is **split using Shamir's Secret Sharing (SSS)** into *n* fragments.
+Each device stores:
+- A copy of the **encrypted file**
+- Its own **fragment of the decryption key**
