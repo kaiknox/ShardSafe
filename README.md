@@ -126,5 +126,5 @@ This project was developed during a **Hackathon**. Due to the time constraints o
 - [ ] **File deletion:** Add a "delete" button next to each file to remove it directly from local storage.
 - [ ] **Persistent sessions:** Make the external key persistent so it is retained when resuming the same session.
 - [ ] **Copy public address:** Add a button in the devices section to easily copy your own public address/key for quick sharing.
-
+- [ ] **Add an ack button:** Add a button that shows you which devices on your list are currently operational. (A protocol already exists for this; you just need to implement the button)
 
